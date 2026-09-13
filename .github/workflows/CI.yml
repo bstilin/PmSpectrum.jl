@@ -4,37 +4,45 @@ on:
   push:
     branches:
       - main
-    tags: ['*']
+    tags:
+      - '*'
   pull_request:
 
 concurrency:
-  # Cancel intermediate builds on PRs, but allow them to complete on the main branch
+  # Cancel intermediate builds on PRs, but allow them to complete on main.
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   test:
     name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }}
     runs-on: ${{ matrix.os }}
+
+    permissions:
+      actions: write
+      contents: read
+
     strategy:
       fail-fast: false
       matrix:
         version:
-          - '1.11' # Minimum supported version
-          - '1'    # Latest stable 1.x release
+          - '1.11' # Minimum supported Julia version
+          - '1'    # Latest stable Julia 1.x release
         os:
           - ubuntu-latest
         arch:
           - x64
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: julia-actions/setup-julia@v2
+      - uses: actions/checkout@v7
+
+      - uses: julia-actions/setup-julia@v3
         with:
           version: ${{ matrix.version }}
           arch: ${{ matrix.arch }}
-      - uses: julia-actions/cache@v2
+
+      - uses: julia-actions/cache@v3
+
       - uses: julia-actions/julia-buildpkg@v1
+
       - uses: julia-actions/julia-runtest@v1
