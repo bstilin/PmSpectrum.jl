@@ -1,0 +1,41 @@
+name = "PmSpectrum"
+uuid = "d022c30c-35e5-48d2-aaae-3c05f83b2f04"
+authors = ["Ben Stilin bstilin@arizona.edu"]
+version = "0.1.0"
+
+[deps]
+BSplineKit = "093aae92-e908-43d7-9660-e50ee39d5a0a"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+DoubleFloats = "497a8b3b-efae-58df-a0af-a86822472b78"
+GaussQuadrature = "d54b0c1a-921d-58e0-8e36-89d8069c0969"
+GenericLinearAlgebra = "14197337-ba66-59df-a3e3-ca00e7dcff7a"
+GenericSchur = "c145ed77-6b09-5dd9-b285-bf645a82121e"
+JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+OrdinaryDiffEqRKN = "af6ede74-add8-4cfd-b1df-9a4dbb109d7a"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+QuadGK = "1fd47b50-473d-5c70-9696-f719f8f3bcdc"
+Roots = "f2b01f46-fcfa-551c-844a-d8ac1e96c665"
+SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
+UUIDs = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
+
+[compat]
+BSplineKit = "0.19"
+DoubleFloats = "1.6"
+GaussQuadrature = "0.5"
+GenericLinearAlgebra = "0.3, 0.4"
+GenericSchur = "0.5.6"
+JLD2 = "0.6.4"
+OrdinaryDiffEqRKN = "2.1"
+Printf = "1.11.0"
+QuadGK = "2.11"
+Roots = "2.2"
+SpecialFunctions = "2.7"
+julia = "1.11"
+
+[extras]
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Random", "Test"]

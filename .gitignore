@@ -1,0 +1,18 @@
+# Julia
+Manifest.toml
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+
+# Results and generated data
+*.jld2
+data/
+plots/
+
+# Python (PyPlot/matplotlib cache)
+__pycache__/
+*.py[cod]
+
+# OS
+*~
+.nfs*

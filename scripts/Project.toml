@@ -1,0 +1,27 @@
+# Environment for the scripts in this directory.
+#
+# PmSpectrum itself is plot-free, so PyPlot is deliberately NOT one of its
+# dependencies: adding it would make every user of the library build PyCall and
+# provide a working Python with matplotlib, for code the library never calls.
+# The scripts do plot, so they get their own environment that adds PyPlot and
+# picks the package up from the parent directory.
+#
+# Run them from the repository root as
+#
+#     julia --project=scripts scripts/tutorial_compute_invariant_density.jl
+#
+# The first run resolves and installs this environment, which includes building
+# PyCall. The [sources] entry below points at the checkout rather than at a
+# registry, so the scripts always run against the working copy of the package.
+# It requires Julia 1.11 or newer, which the package requires anyway.
+
+[deps]
+BSplineKit = "093aae92-e908-43d7-9660-e50ee39d5a0a"
+DoubleFloats = "497a8b3b-efae-58df-a0af-a86822472b78"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+PmSpectrum = "d022c30c-35e5-48d2-aaae-3c05f83b2f04"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
+
+[sources]
+PmSpectrum = {path = ".."}
