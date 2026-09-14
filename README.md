@@ -4,7 +4,7 @@
 
 Maps of this kind are named after [Pomeau and Manneville (1980)](https://doi.org/10.1007/BF01197757), who introduced intermittency as a model for transitions to turbulence, characterized by long laminar episodes interrupted by irregular chaotic bursts.
 
-The primary purpose of the package is to **test predictions obtained from a formal asymptotic analysis of the small-noise problem** and to **generate new hypotheses that are not yet explained analytically**. In particular, as $`\varepsilon \to 0`$, we study the shape of the noisy invariant density, its $`L^1(\mathbb{T})`$ convergence to the noiseless density, the closing of the spectral gap, and the structure of additional slow spectral modes.
+The primary purpose of the package is to test predictions obtained from a formal asymptotic analysis of the small-noise problem and to generate new hypotheses. In particular, as $`\varepsilon \to 0`$, we study the shape of the noisy invariant density, its $`L^1(\mathbb{T})`$ convergence to the noiseless density, the closing of the spectral gap, and the structure of additional slow spectral modes.
 
 The numerical method uses a nonuniform B-spline Galerkin approximation designed to resolve the shrinking spatial scales that develop near the neutral fixed point.
 
