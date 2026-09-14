@@ -10,9 +10,13 @@
 #   run_single_experiment.
 # =============================================================================
 
-# ENV["MPLBACKEND"] = "tkagg"  # for interactive plotting on some platforms
-
 using PyPlot
+
+# If you have issue with interactive plotting on some platforms,
+# uncomment the following line to force the use of interactive TkAgg backend:
+
+# PyPlot.matplotlib.use("TkAgg", force=true)
+
 using PmSpectrum
 using BSplineKit
 using DoubleFloats
