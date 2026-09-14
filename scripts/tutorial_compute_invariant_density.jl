@@ -558,7 +558,7 @@ fig5.tight_layout()
 
 SCH_L = 8.0   # truncation half-width; eigenfunctions negligible past ~8
 SCH_N = 4000  # FD grid points, used only to bracket the shooting problem
-N_SEC = 6     # modes per parity sector, so 2*N_SEC predictions total
+N_SEC = 3     # modes per parity sector, so 2*N_SEC predictions total
 
 αf = Float64(ALPHA)
 
@@ -672,8 +672,8 @@ end
 # Adjust X_ZOOM and Y_ZOOM below to control how tightly the plot is
 # focused around λ = 1.
 
-X_ZOOM = 0.00025
-Y_ZOOM = 0.00015
+X_ZOOM = 0.0001
+Y_ZOOM = 0.0001
 
 λ_re_zoom = Float64.(real.(λ_sorted))
 λ_im_zoom = Float64.(imag.(λ_sorted))
