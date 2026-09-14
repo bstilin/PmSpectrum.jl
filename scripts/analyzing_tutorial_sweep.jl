@@ -1,3 +1,7 @@
+# Copyright (c) 2026 Ben Stilin
+#
+# Licensed under the MIT License. See LICENSE for details.
+
 # =============================================================================
 #   Analysis of the sweep produced by `tutorial_parameter_sweep.jl`.
 #

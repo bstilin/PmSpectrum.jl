@@ -1,3 +1,7 @@
+# Copyright (c) 2026 Ben Stilin
+#
+# Licensed under the MIT License. See LICENSE for details.
+
 """
 _check_nonwrapping(a::T, b::T) where {T<:AbstractFloat}
 

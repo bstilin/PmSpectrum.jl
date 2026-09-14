@@ -1,3 +1,7 @@
+# Copyright (c) 2026 Ben Stilin
+#
+# Licensed under the MIT License. See LICENSE for details.
+
 # -------------------------------------
 # Tests for BSplineGalerkinMatrix.jl
 # -------------------------------------

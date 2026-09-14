@@ -1,3 +1,7 @@
+# Copyright (c) 2026 Ben Stilin
+#
+# Licensed under the MIT License. See LICENSE for details.
+
 # =============================================================================
 #   Standalone, step-by-step computation of the invariant density of the noisy
 #   symmetric Pomeau–Manneville map using the cubic B-spline Galerkin method.

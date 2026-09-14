@@ -1,3 +1,7 @@
+# Copyright (c) 2026 Ben Stilin
+#
+# Licensed under the MIT License. See LICENSE for details.
+
 """
     bspline_inner_product(ϕi, ϕj, nodes, weights; atol) -> T
 
