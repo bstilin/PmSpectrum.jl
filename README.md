@@ -6,7 +6,7 @@ Maps of this kind are named after [Pomeau and Manneville (1980)](https://doi.org
 
 The primary purpose of the package is to test predictions obtained from a formal asymptotic analysis of the small-noise problem and to generate new hypotheses. In particular, as $`\varepsilon \to 0`$, we study the shape of the noisy invariant density, its $`L^1(\mathbb{T})`$ convergence to the noiseless density, the closing of the spectral gap, and the structure of additional slow spectral modes.
 
-The numerical method uses a nonuniform B-spline Galerkin approximation designed to resolve the shrinking spatial scales that develop near the neutral fixed point.
+The numerical method uses a nonuniform cubic B-spline Galerkin approximation designed to resolve the shrinking spatial scales that develop near the neutral fixed point.
 
 This code accompanies the manuscript currently in preparation:
 
@@ -114,7 +114,7 @@ Four things are worth knowing before changing the numbers:
 
 * **`num_break_points` is the dominant cost.** It counts breakpoints in $`[\xi,1/2]`$ of the hybrid mesh, so the basis is roughly twice that; the transfer matrix is dense, so doubling it is about 4× the assembly and 8× the eigensolve.
 
-* **Small `epsilon` is not itself slow**, but it needs a finer basis to resolve the boundary layer, which is.
+* **Small `epsilon` is not itself slow**, but it needs a finer basis to resolve the boundary layer.
 
 `rh.eigenvalues` is sorted by $`|\lambda|`$ descending. The full stored spectrum is also available unpacked as `result.eigenvalues_re` and `result.eigenvalues_im`, and the invariant-density spline coefficients as `result.c`.
 
@@ -208,17 +208,17 @@ The branch on $`[0,1/2)`$ is the intermittent branch of the Liverani–Saussol�
 
 The identified point $`0\equiv1`$ is a two-sided neutral fixed point: the derivative of the map there is equal to one, so trajectories sufficiently close to the fixed point escape slowly and monotonically. Away from this point the dynamics are expanding and chaotic. A typical trajectory therefore alternates unpredictably between long laminar episodes near the neutral fixed point and faster, chaotic excursions through the expanding part of the map.
 
-This intermittency has important statistical consequences. The noiseless map has an invariant probability density $`\rho_0`$ with a power-law singularity
+This intermittency has important statistical consequences. The noiseless map has an even invariant probability density $`\rho_0`$ with a power-law singularity as $`x \to 0^+`$
 
 ```math
-\rho_0(x)\sim C|x|^{-\alpha}
+\rho_0(x)\sim C x^{-\alpha}.
 ```
 
-near the neutral fixed point. Its transfer operator has no spectral gap, and relaxation and correlation decay are algebraic rather than exponential.
+Its transfer operator has no spectral gap, and relaxation and correlation decay are algebraic rather than exponential.
 
 ### The deterministic transfer operator
 
-To study the statistical behavior of the map, we work with the **Perron–Frobenius operator**, also called the **transfer operator**. Rather than evolving individual points under $`T_\alpha`$, the transfer operator evolves probability densities.
+To study the statistical behavior of the map, we work with the **Perron–Frobenius operator**, also called the **transfer operator**. Rather than evolving individual points under $`T_\alpha`$, the transfer operator evolves densities.
 
 For a density $`f\in L^1(\mathbb{T})`$, the deterministic transfer operator
 
@@ -314,15 +314,13 @@ The spectrum of the noisy transfer operator is the central object of study for t
 
 ## Why study the transfer-operator spectrum?
 
-The transfer operator gives a linear description of the statistical dynamics. Rather than following individual trajectories, it describes how an entire probability density evolves under repeated applications of the random map.
-
-The eigenvalue $`1`$ represents the stationary state. Its normalized eigenfunction is the invariant density $`\rho_\varepsilon`$, satisfying
+The eigenvalue $`1`$ of $`P_\varepsilon`$ represents the stationary state. Its normalized eigenfunction is the invariant density $`\rho_\varepsilon`$, satisfying
 
 ```math
 P_\varepsilon\rho_\varepsilon=\rho_\varepsilon.
 ```
 
-The remaining spectral data describe how perturbations away from equilibrium evolve. Roughly, a mode associated with an eigenvalue $`\lambda`$ is multiplied by $`\lambda`$ after one iteration and by $`\lambda^n`$ after $`n`$ iterations. Eigenvalues close to the unit circle therefore correspond to slowly decaying statistical structures, while eigenvalues deeper inside the unit disk correspond to faster relaxation.
+The remaining spectral data describe how perturbations away from equilibrium evolve. Roughly, a mode associated with an eigenvalue $`\lambda`$ is multiplied by $`\lambda`$ after one iteration and by $`\lambda^n`$ after $`n`$ iterations. Eigenvalues close to the unit circle therefore correspond to slowly decaying eigenfunctions, while eigenvalues deeper inside the unit disk correspond to faster relaxation.
 
 Of particular interest is the leading nonstationary eigenvalue $`\lambda_2`$. Its distance from the unit eigenvalue,
 
@@ -333,12 +331,6 @@ Of particular interest is the leading nonstationary eigenvalue $`\lambda_2`$. It
 determines the spectral gap and hence the longest relaxation timescale. As the noise tends to zero, this gap is expected to close in order to recover the gapless intermittent dynamics of the noiseless map.
 
 Computing more of the spectrum provides information beyond the invariant density and the single slowest decay rate. Additional eigenvalues and eigenfunctions describe a hierarchy of transient modes.
-
-Accordingly, `PmSpectrum.jl` is intended for two complementary purposes:
-
-1. **Prediction testing.** The package provides high-accuracy numerical approximations against which the small-noise predictions of the formal asymptotic theory can be tested.
-
-2. **Hypothesis generation.** By computing spectral information beyond what is currently explained by the asymptotic theory, the package can reveal patterns such as the location, multiplicity, symmetry, and scaling of additional spectral modes that suggest new analytical questions and conjectures.
 
 ---
 
@@ -352,9 +344,9 @@ The starting point is a simple feature already visible in relatively coarse nume
 
 *Cartoon of the small-noise boundary layer near the neutral fixed point. The noisy density $`\rho_\varepsilon`$ is approximately flat close to $`x=0`$ and matches onto the noiseless power law $`\rho_0(x)\sim Cx^{-\alpha}`$ outside a shrinking region of width $`L_\varepsilon`$. As $`\varepsilon\to0`$, the layer narrows and the peak grows.*
 
-The formal asymptotic analysis explains this numerical picture by identifying a competition between the weak deterministic drift away from the neutral fixed point and stochastic diffusion.
+The formal asymptotic analysis explains this numerical picture by identifying a competition between the deterministic drift away from the neutral fixed point and stochastic diffusion.
 
-Near the fixed point, the deterministic displacement is governed by the local drift
+Near the fixed point, in coordinates centered at zero, the deterministic displacement is governed by the local drift
 
 ```math
 2^\alpha\mathrm{sgn}(x)|x|^{1+\alpha},
@@ -384,7 +376,7 @@ Introducing the rescaled coordinate
 t=\frac{x}{L_\varepsilon}
 ```
 
-our analysis produces the leading-order prediction
+our analysis produces a similarity solution,
 
 ```math
 \rho_\varepsilon(x)
@@ -393,7 +385,7 @@ L_\varepsilon^{-\alpha}
 U_0\!\left(\frac{x}{L_\varepsilon}\right),
 ```
 
-where the boundary-layer profile is explicitly
+as the leading-order prediction for the shape of $`\rho_\varepsilon`$ in $`[0,\sqrt{L_\varepsilon}]`$, i.e., in the boundary layer and an intermediate matching region. The boundary-layer profile is given by
 
 ```math
 U_0(t)
@@ -495,7 +487,7 @@ O\!\left(
 
 ### A Schrödinger description of the slow spectrum
 
-Beyond the stationary density, our analysis predicts the slow spectral structure of $`P_\varepsilon`$. In particular, the real eigenvalues near $`1`$ are governed, to leading order, by the spectrum of an auxiliary Schrödinger problem,
+Beyond the stationary density, our analysis predicts the slow spectral structure of $`P_\varepsilon`$. In particular, the real eigenvalues near $`1`$ are governed, to leading order, by the spectrum of an auxiliary full line Schrödinger problem,
 
 ```math
 -v''+q_\alpha v=\omega v.
@@ -511,8 +503,6 @@ q_\alpha(y)
 2^{2\alpha-2}|y|^{2+2\alpha}.
 ```
 
-The boundary conditions are determined by the boundary-layer model and its interaction with the outer dynamics.
-
 The resulting auxiliary problem has an ordered sequence of real eigenvalues
 
 ```math
@@ -522,14 +512,14 @@ The resulting auxiliary problem has an ordered sequence of real eigenvalues
 The formal correspondence with the discrete noisy transfer operator suggests slow eigenvalues of the form
 
 ```math
-\lambda_j(\varepsilon)
+\lambda_{j+2}(\varepsilon)
 \approx
 \exp\!\left(
 -\omega_jL_\varepsilon^\alpha
 \right).
 ```
 
-The lowest Schrödinger eigenvalue $`\omega_0`$ predicts the spectral gap. More broadly, the calculation suggests a collection of real slow modes approaching $`1`$ as $`\varepsilon\to0`$.
+for $`j \geq 0`$. We use the convention that $`\lambda_1 = 1`$, so the lowest Schrödinger eigenvalue $`\omega_0`$ predicts the spectral gap. More broadly, the calculation suggests a collection of real slow modes approaching $`1`$ as $`\varepsilon\to0`$.
 
 These results should be interpreted as predictions of a formal boundary-layer analysis rather than as a complete rigorous characterization of the small-noise spectrum. A central role of `PmSpectrum.jl` is to determine which of these predictions are borne out by high-accuracy computation and what additional structure remains to be explained.
 
@@ -545,19 +535,19 @@ These calculations provide numerical evidence for the formal small-noise predict
 
 <img src="docs/figures/invariant_density_alpha0.5.png" width="560" alt="Computed invariant density for ten values of epsilon, log-log, with the boundary-layer prediction overlaid as crosses">
 
-Each solid curve is a computed $`\rho_\varepsilon`$ and the crosses are the matched prediction from `Utils.construct_perturbation_solution` at second order. The density is flat on a plateau of height $`O(L_\varepsilon^{-\alpha})`$ inside the layer, turns over near $`x\sim L_\varepsilon`$, and then follows a common $`\varepsilon`$-independent outer profile $`\sim x^{-\alpha}`$ before the rise into the cusp at $`x=1`$. Lowering $`\varepsilon`$ moves the turnover left and the plateau up, but does not move the outer profile.
+Each solid curve is a computed $`\rho_\varepsilon`$ and the crosses are the predicted similarity solution computed by `Utils.construct_perturbation_solution` at second order. The density is flat on a plateau of height $`O(L_\varepsilon^{-\alpha})`$ inside the layer, turns over near $`x\sim L_\varepsilon`$, and then follows a common $`\varepsilon`$-independent outer profile $`\sim x^{-\alpha}`$ before the rise into the cusp at $`x=1`$. Lowering $`\varepsilon`$ moves the turnover left and the plateau up, but does not move the outer profile.
 
 ### Boundary-layer collapse
 
 <img src="docs/figures/density_collapse_alpha0.5.png" width="560" alt="The same densities rescaled by the boundary-layer scale, collapsing onto the similarity profile U_0">
 
-This is the same data under the rescaling the asymptotics predict: $`\rho_\varepsilon(tL_\varepsilon)L_\varepsilon^{\alpha}`$ plotted against $`t=x/L_\varepsilon`$ should be the single $`\varepsilon`$-independent profile $`U_0(t)`$, drawn here as black crosses. The curves at the largest $`\varepsilon`$ sit visibly off it, and the remaining ones tighten onto it as $`\varepsilon`$ decreases.
+This is the same data under the rescaling the asymptotics predict: $`\rho_\varepsilon(tL_\varepsilon)L_\varepsilon^{\alpha}`$ plotted against $`t=x/L_\varepsilon`$ should be the single $`\varepsilon`$-independent profile $`U_0(t)`$, drawn here as black crosses, as $`\varepsilon \to 0`$. The curves at the largest $`\varepsilon`$ sit visibly off it, and the remaining ones tighten onto it as $`\varepsilon`$ decreases.
 
 ### $`L^1`$ convergence
 
 <img src="docs/figures/l1_convergence_alpha0.5.png" width="560" alt="L1 distance between the density and the reference density against epsilon, log-log, with a dashed guide at the predicted slope">
 
-The measured $`\lVert\rho_\varepsilon-\rho_{\mathrm{ref}}\rVert_{L^1}`$ against $`\varepsilon`$, computed by `Bases.l1_norm_difference` in its two-basis form because each $`\varepsilon`$ carries its own adapted mesh. The dashed line is drawn **at** the predicted slope $`\zeta=2(1-\alpha)/(2+\alpha)`$ and offset below the data, not fitted to it, so what the figure shows is whether the data run parallel to the prediction. Note that $`\rho_{\mathrm{ref}}`$ is the smallest-$`\varepsilon`$ run rather than the true $`\varepsilon\to0`$ density; the flattening at the left end is that finite-reference effect, where the difference being measured is no longer large compared to the reference's own distance from the limit.
+The measured $`\lVert\rho_\varepsilon-\rho_{\mathrm{ref}}\rVert_{L^1}`$ against $`\varepsilon`$, computed by `Bases.l1_norm_difference` in its two-basis form because each $`\varepsilon`$ carries its own adapted mesh. The dashed line is drawn **at** the predicted slope $`\zeta=2(1-\alpha)/(2+\alpha)`$ and offset below the data, not fitted to it, so what the figure shows is whether the data run parallel to the prediction. Note that $`\rho_{\mathrm{ref}}`$ is the smallest-$`\varepsilon`$ run rather than the true $`\varepsilon\to0`$ density; the deviation from the power law at the left end is this finite-reference effect.
 
 ### Spectral-gap closure
 
@@ -565,25 +555,17 @@ The measured $`\lVert\rho_\varepsilon-\rho_{\mathrm{ref}}\rVert_{L^1}`$ against 
 
 The gap $`1-|\lambda_2(\varepsilon)|`$ against $`\varepsilon`$, with the dashed guide again drawn at the predicted slope $`s=2\alpha/(2+\alpha)`$ rather than fitted. The modulus is used instead of the real part so that the diagnostic stays well defined if discretization leaves a small imaginary part; over this range $`\lambda_2`$ is real to working precision.
 
-One coincidence worth naming: at $`\alpha=1/2`$ the two exponents $`\zeta=2(1-\alpha)/(2+\alpha)`$ and $`s=2\alpha/(2+\alpha)`$ are both exactly $`0.4`$, so the last two figures carry the same nominal slope. They are unrelated predictions that happen to agree at this one $`\alpha`$. Changing `ALPHA_TAG` in the tutorial scripts to `"0.25"` or `"0.75"` separates them.
+It is a coincidence that at $`\alpha=1/2`$ the two exponents $`\zeta=2(1-\alpha)/(2+\alpha)`$ and $`s=2\alpha/(2+\alpha)`$ are both exactly $`0.4`$, so the last two figures carry the same nominal slope. They are unrelated predictions that happen to agree at this one $`\alpha`$.
 
-### Slow modes against the Schrödinger prediction
+### Slow eigenvalues against the Schrödinger prediction
 
 <img src="docs/figures/schrodinger_prediction_alpha0.85_eps1e-9.png" width="560" alt="The computed transfer-operator spectrum near lambda equals 1, with the six Schrodinger predictions marked as crosses on the real axis">
 
-Everything above this point is a sweep at $`\alpha=1/2`$. This subsection instead comes from a **single run of `tutorial_compute_invariant_density.jl` at the settings committed in the repository**: `T = Float64`, `ALPHA = 0.85`, `EPSILON = 1e-9`, `NUM_BREAK_POINTS = 100`, `NUM_QUAD_POINTS = 64`, and, for the Schrödinger side, `SCH_L = 8.0`, `SCH_N = 4000`, `N_SEC = 3`. Running that script unmodified reproduces both the figure and the table below; the table is printed to standard output.
+This plot comes from a **single run of `tutorial_compute_invariant_density.jl` at the settings committed in the repository**: `T = Float64`, `ALPHA = 0.85`, `EPSILON = 1e-9`, `NUM_BREAK_POINTS = 100`, `NUM_QUAD_POINTS = 64`, and, for the Schrödinger side, `SCH_L = 8.0`, `SCH_N = 4000`, `N_SEC = 3`. Running that script unmodified reproduces both the figure and the table below; the table is printed to standard output.
 
-The asymptotic analysis predicts that the slow part of the transfer-operator spectrum is generated by a Sturm–Liouville problem, with each of its eigenvalues $`\omega_j`$ producing one transfer eigenvalue
+In the figure, the blue points are the computed spectrum and the red crosses are the Schrödinger predictions, which lie on the real axis by construction. The table compares the predicted eigenvalues with the largest computed real eigenvalues below $`\lambda=1`$, ordered from largest to smallest. Computed eigenvalues are treated as real when their imaginary part is smaller than $`\sqrt{\texttt{eps}}`$; the invariant eigenvalue $`\lambda_1=1`$ and any nearby complex pairs are excluded from the comparison. Digits are shown to a few places beyond where the predicted and computed values begin to differ. For $`j=1`$, the agreement extends to eleven decimal places, so the displayed predicted and computed values are identical at the shown precision, while the error columns record the remaining difference.
 
-```math
-\lambda_j = \exp\left(-\omega_j L_\varepsilon^{\alpha}\right), \qquad L_\varepsilon = \left(\frac{\texttt{epsilon}^2}{6}\right)^{1/(2+\alpha)}
-```
-
-At these settings $`L_\varepsilon \approx 2.577\times10^{-7}`$. Recall that `epsilon` is the half-width of the kernel, so `EPSILON = 1e-9` is $`\varepsilon=5.8\times10^{-10}`$ in the paper's convention.
-
-In the figure, the blue points are the computed spectrum and the red crosses are the Schrödinger predictions, which lie on the real axis by construction. The table compares the predicted eigenvalues with the largest computed real eigenvalues below $`\lambda=1`$, ordered from largest to smallest. Computed eigenvalues are treated as real when their imaginary part is smaller than $`\sqrt{\texttt{eps}}`$; the invariant eigenvalue $`\lambda=1`$ and any nearby complex pairs are excluded from the comparison. Digits are shown to a few places beyond where the predicted and computed values begin to differ. For $`j=1`$, the agreement extends to eleven decimal places, so the displayed predicted and computed values are identical at the shown precision, while the error columns record the remaining difference.
-
-| $`j`$ | parity | $`\omega_j`$ | predicted $`\lambda_j`$ | measured $`\lambda_j`$ | rel. eigenvalue error | rel. gap error |
+| $`j`$ | parity | $`\omega_j`$ | predicted $`\lambda_{j+2}`$ | measured $`\lambda_{j+2}`$ | rel. eigenvalue error | rel. gap error |
 | ---: | :--- | ---: | ---: | ---: | ---: | ---: |
 | 0 | even | 1.83732 | 0.999995390 | 0.999995180 | $`2.10\times10^{-7}`$ | $`4.37\times10^{-2}`$ |
 | 1 | odd | 4.96431 | 0.999987545 | 0.999987545 | $`7.41\times10^{-12}`$ | $`5.95\times10^{-7}`$ |
@@ -592,11 +574,11 @@ In the figure, the blue points are the computed spectrum and the red crosses are
 | 4 | even | 16.2498 | 0.999959230 | 0.999959468 | $`2.38\times10^{-7}`$ | $`5.87\times10^{-3}`$ |
 | 5 | odd | 20.6187 | 0.999948269 | 0.999948242 | $`2.67\times10^{-8}`$ | $`5.17\times10^{-4}`$ |
 
-The two error columns measure different aspects of the agreement. The relative eigenvalue error measures how accurately the Schrödinger reduction locates each eigenvalue on its natural $`O(1)`$ scale, and the very small values show close agreement with the computed spectrum. Since all of these eigenvalues lie within about $`10^{-4}`$ of $`1`$, however, the relative error in the gap $`1-\lambda_j`$ is a much more stringent test: it measures the error relative to the small displacement from $`1`$ that the asymptotic reduction is actually intended to capture. Accordingly, the gap errors are larger than the eigenvalue errors by factors between roughly $`2\times 10^4`$ and $`2\times 10^5`$ across these six modes.
+The two error columns measure different aspects of the agreement. The relative eigenvalue error measures how accurately the Schrödinger reduction locates each eigenvalue on its natural $`O(1)`$ scale, and the very small values show close agreement with the computed spectrum. Since all of these eigenvalues lie within about $`10^{-4}`$ of $`1`$, however, the relative error in the gap $`1-\lambda_{j+2}`$ is a much more stringent test: it measures the error relative to the small displacement from $`1`$ that is relevant to the dynamics. Accordingly, the gap errors are larger than the eigenvalue errors by factors between roughly $`2\times 10^4`$ and $`2\times 10^5`$ across these six modes.
 
 Measured on this sharper scale, the agreement is good but noticeably parity-dependent. The three odd modes have relative gap errors between about $`6\times 10^{-7}`$ and $`5\times 10^{-4}`$, while the three even modes lie between roughly $`0.6\%`$ and $`4\%`$. Comparing successive even/odd pairs, the odd mode is more accurate by factors of about $`7\times 10^4`$, $`3\times 10^2`$, and $`11`$, respectively. Thus the two parity sectors differ dramatically at the top of the spectrum but become much closer for higher modes.
 
-> **Open question.** The apparent difference between the even and odd sectors is not yet explained by the leading-order asymptotics. For now, we leave its origin as an open question to be investigated through additional parameter sweeps and mesh-refinement studies.
+> **Open question.** The apparent difference between the even and odd sectors is not yet explained by the leading-order asymptotics.
 
 ### Reproducing these figures
 
@@ -618,9 +600,9 @@ julia --project=scripts scripts/tutorial_compute_invariant_density.jl
 
 ## Numerical method
 
-### B-spline Galerkin approximation
+### Cubic B-spline Galerkin approximation
 
-The noisy transfer operator $`P_\varepsilon`$ is approximated by a finite-rank Galerkin projection onto a space of B-splines $`\{\phi_j\}_{j=1}^N`$. The Galerkin and mass matrices are defined by
+The noisy transfer operator $`P_\varepsilon`$ is approximated by a finite-rank Galerkin projection onto a space of cubic B-splines $`\{\phi_j\}_{j=1}^N`$. The Galerkin and mass matrices are defined by
 
 ```math
 G_{ij}
@@ -670,15 +652,15 @@ Recall that the code parameter `epsilon` is the **half-width** of the uniform no
 
 On `[0,1/2]`, the mesh is divided into two regions:
 
-* **Inner region `[0, ξ]`.** The invariant density is approximately flat on the boundary-layer scale. Breakpoints use geometrically varying spacing to resolve the transition near the neutral fixed point while connecting smoothly to the outer mesh.
-
 * **Outer region `[ξ,1/2]`.** The density approaches a power law, and the breakpoints are chosen using the $`L^2`$-equidistribution heuristic of [de Boor (1973)](https://doi.org/10.1007/978-3-0348-5979-0_3), based on the expected asymptotic behavior of the density.
+
+* **Inner region `[0, ξ]`.** Breakpoint widths vary geometrically, transitioning from fine spacing near ξ to progressively wider spacing toward the neutral fixed point, where the density becomes flat. This grading resolves the transition region while matching smoothly to the fine outer mesh at ξ.
 
 The resulting breakpoint sequence is reflected about $`x=1/2`$, preserving the symmetry of the map.
 
 ### Galerkin matrix assembly
 
-The transfer matrix is assembled using the duality between the deterministic transfer and Koopman operators together with the self-adjointness of convolution by the symmetric noise kernel.
+The mass matrix is easily assembled via exact quadrature of piecewise degree-6 polynomials. The transfer matrix is assembled using the duality between the deterministic transfer and Koopman operators together with the self-adjointness of convolution by the symmetric noise kernel.
 
 Using
 
@@ -700,7 +682,7 @@ G_{ij}
 \,du,
 ```
 
-where the sum is over the branches $`T_k`$ of $`T_\alpha`$.
+where the sum is over the branches $`T_k`$ of $`T_\alpha`$, and $`\mathrm{dom}(f)`$ denotes the domain of $`f`$.
 
 The matrix entries are evaluated by carefully tracking the B-spline knots, together with their noise-shifted images and pullbacks through the branches of $`T_\alpha`$. These points partition the integration domain into subintervals on which the relevant B-spline pieces and branch expressions are smooth except for the subintervals abutting the endpoints.
 
@@ -712,7 +694,7 @@ On the endpoint intervals the branches of $`T_\alpha`$ introduce a fractional po
 
 ### Integrating observables against the invariant density
 
-Any stored run can be integrated against directly. The quadrature mesh is the graded one the assembly itself uses, so the endpoint cusps land on panel boundaries rather than inside a panel.
+The invariant density from any stored run can be integrated against directly.
 
 ```julia
 
@@ -722,7 +704,7 @@ integrate_against_density(x -> cos(2π * x), result)     # ∫ f ρ_ε
 
 ```
 
-For several observables against the same density, build the rule once instead of re-deriving it per call:
+For several observables against the same density, build the quadrature rule once instead of re-deriving it per call:
 
 ```julia
 
@@ -735,8 +717,6 @@ integrate_against_density(x -> x, dq)                   # the mean
 integrate_against_density(x -> Utils.log_symmetric_pm_derivative(x, 0.5), dq)
 
 ```
-
-That last line is the Lyapunov exponent.
 
 ### Autocorrelation curves
 
@@ -754,15 +734,14 @@ cc.mean                  # the invariant mean of f
 
 cc.density_mass          # ∫ ρ_ε, a check on the run
 
-estimate_decay_rate(cc).rate
+estimate_decay_rate(cc).rate # rate of exponential decay, fitted to last third of lags
 
 ```
 
-`cc.variance` and `cc.C[1]` are computed by different routes, so their agreement is a check on the projection. Two cautions on the fitted rate: it is the *effective* rate over the fit window (the last third of the lags by default, overridable with the `lags` keyword), so it only approaches $`|\lambda_2|`$ once the subdominant modes have died out; and since the decay rate is set by the spectral gap, at small $`\varepsilon`$ the curve is nearly flat and you need many lags before the fit means anything.
-
 ### Parameter sweeps
 
-`run_grid` takes the Cartesian product of its four lists and writes one JLD2 file per combination, maintaining a manifest index alongside them.
+`run_grid` takes the Cartesian product of its four lists and writes one JLD2 file per combination
+with a UUID filename, maintaining a manifest index alongside them.
 
 ```julia
 
@@ -786,7 +765,7 @@ For a version of this loop written out in the open, with filename-encoded result
 
 ### Reading a sweep back
 
-The manifest is the query layer. `filter_results` accepts any subset of the run parameters and returns the matching entries; `show_manifest` prints them.
+The manifest is used for querying stored runs. `filter_results` accepts any subset of the run parameters and returns the matching entries; `show_manifest` prints them.
 
 ```julia
 
@@ -842,8 +821,6 @@ p    = sortperm(abs.(λ); rev = true)
 
 ```
 
-An eigenvector has no intrinsic scale, so fix one before comparing runs. Dividing by the *signed* value at the fixed point sets `φ₂(0) = 1` and pins the otherwise arbitrary sign in the same step; `scripts/analyzing_tutorial_sweep.jl` does exactly this.
-
 ---
 
 ## Precision and serialization
@@ -880,23 +857,23 @@ The package is organized into mathematical utilities, basis and Galerkin assembl
 
 **`src/BSplineBasis.jl`** — B-spline basis construction and nonuniform breakpoint generation, including the hybrid boundary-layer mesh.
 
-**`src/BSplineGalerkinMatrix.jl`** — Assembly of the mass matrix $`M`$ and transfer matrix $`G`$, including exact piecewise integration of the noise-convolved B-splines and construction of the $`S^*`$ quadrature partition.
+**`src/BSplineGalerkinMatrix.jl`** — Assembly of the mass matrix $`M`$ and transfer matrix $`G`$.
 
 **`src/DensityIntegration.jl`** — Graded quadrature meshes and density-weighted quadrature rules, used to integrate observables against a computed invariant density.
 
-**`src/Correlation.jl`** — Deterministic stationary autocorrelation calculations using the Galerkin transfer operator, together with decay-rate diagnostics.
+**`src/Correlation.jl`** — Deterministic stationary autocorrelation calculations using the discrete Galerkin transfer operator, together with decay-rate diagnostics.
 
-**`src/BlockMatrix.jl`** — ⚠️ **Experimental test code, not fully vetted.** Block-structured operator representation used when the basis is built in decoupled form, together with the projection of the global density approximation onto a B-spline basis. Nothing in the main pipeline calls it, and it is exercised only by its own tests, which check internal consistency rather than the correctness of the construction. Treat its output as provisional.
+**`src/BlockMatrix.jl`** — ⚠️ **Experimental test code, not fully vetted.** Used to study the spectral properties of a block decomposition of the noisy transfer operator defined by projection operators generated by indicator functions. Treat its output as provisional.
 
 ### The asymptotic comparison
 
 These modules compute the small-noise predictions described above so that they can be compared against the Galerkin spectrum. They are independent of the Galerkin machinery above.
 
-**`src/SchrodingerFD.jl`** — Finite-difference solver for the Sturm–Liouville problem $`-v''+q_\alpha v=\omega v`$ on a truncated half-line, in one parity sector. Simple enough to audit directly, and used to bracket the shooting solver.
+**`src/SchrodingerFD.jl`** — Finite-difference solver for the Sturm–Liouville problem $`-v''+q_\alpha v=\omega v`$ on a truncated half-line, in one parity sector. Used to bracket the shooting solver.
 
 **`src/SchrodingerShooting.jl`** — Matched-shooting refinement of the same eigenproblem, plus merging of the two parity sectors into the full-line spectrum.
 
-**`src/TransferPrediction.jl`** — Converts Sturm–Liouville eigenpairs into predicted transfer-operator eigenvalues and eigenfunctions, undoing the change of variable that produced the Sturm–Liouville form. Solver-agnostic, and the home of the two $`\varepsilon`$ conventions.
+**`src/TransferPrediction.jl`** — Converts Sturm–Liouville eigenpairs into predicted transfer-operator eigenvalues and eigenfunctions, undoing the change of variable that produced the Sturm–Liouville form.
 
 **`src/ResolventNorm.jl`** — Norm of the reduced resolvent of $`I-P_{\varepsilon,N}`$ at $`z=1`$, restricted to the zero-mass subspace. This supports ongoing work on turning the formal asymptotics into theorems: a uniform bound on the growth of this resolvent as $`\varepsilon\to0`$ is what a rigorous argument would need, and the computed norms are used to test whether such a bound is plausible and what rate it would take. A standalone diagnostic; nothing else in the package depends on it.
 
@@ -940,33 +917,7 @@ Running `] test` from the default environment fails with `The Project.toml of th
 
 The test suite covers the B-spline basis, branch inversion, Galerkin matrix assembly, numerical integration, result serialization, reconstruction of saved results, invariant-density calculations, and correlation calculations.
 
-**Expect the full suite to take around ten minutes** on the machine listed under [Compute environment](#compute-environment), with the Galerkin-matrix tests accounting for roughly half of it.
-
-When iterating on one area, you can run only the file you are changing. Start Julia from the repository root with the package environment active:
-
-```text
-
-julia --project=.
-
-```
-
-Then run the test file from the Julia REPL:
-
-```julia
-
-using Test, PmSpectrum
-
-using QuadGK: quadgk
-
-@testset verbose=true "single file" begin
-
-    include("test/bspline_basis_test.jl")
-
-end
-
-```
-
-Individual test files do not repeat the imports that `test/runtests.jl` hoists, so supply them yourself. `verbose=true` prints the per-`@testset` breakdown. A few files need additional imports; check the top of the file if one fails to load.
+**Expect the full suite to take around ten minutes** on the machine listed under [Compute environment](#compute-environment).
 
 ---
 
