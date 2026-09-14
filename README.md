@@ -64,9 +64,9 @@ pkg> add https://github.com/bstilin/PmSpectrum.jl
 
 The package requires Julia 1.11+. Its dependencies are declared in the `Project.toml` at the repository root.
 
-This installs the library only. The tutorial scripts are not part of the installed package, so to run those, clone the repository instead and work from the clone:
+This installs the library only. The tutorial scripts are not part of the installed package, so to run those, clone the repository instead and work from the clone. This requires Git to be installed and available from your terminal:
 
-```bash
+```text
 
 git clone https://github.com/bstilin/PmSpectrum.jl
 
@@ -124,15 +124,15 @@ If you would rather start from complete runnable examples, `scripts/` contains t
 
 The scripts have their own environment, `scripts/Project.toml`, which adds `PyPlot` and picks the package up from the parent directory. After cloning the repository, instantiate this environment once from the repository root:
 
-```bash
+```text
 
-julia --project=scripts -e 'using Pkg; Pkg.instantiate()'
+julia --project=scripts -e "using Pkg; Pkg.instantiate()"
 
 ```
 
 Then run the scripts from the repository root, for example:
 
-```bash
+```text
 
 julia --project=scripts scripts/tutorial_compute_invariant_density.jl
 
@@ -160,19 +160,25 @@ The repository uses two Julia environments:
 
 * `scripts/Project.toml` is the scripts environment. It adds `PyPlot` and points `PmSpectrum` at the local checkout, so scripts run against the current source code.
 
-From the repository root,
+From the repository root, start Julia with the package environment using
 
-```bash
+```text
 
-julia --project=.          # package environment
+julia --project=.
 
-julia --project=scripts    # scripts environment
+```
+
+or with the scripts environment using
+
+```text
+
+julia --project=scripts
 
 ```
 
 The tutorial and analysis scripts should be run with the scripts environment, for example,
 
-```bash
+```text
 
 julia --project=scripts scripts/tutorial_compute_invariant_density.jl
 
@@ -596,7 +602,7 @@ Measured on this sharper scale, the agreement is good but noticeably parity-depe
 
 All three commands take relative paths, so they need to be run **from the repository root**. The first two are the sweep, in this order; the third is the single run behind the Schrödinger comparison and is independent of them:
 
-```bash
+```text
 
 julia --project=scripts scripts/tutorial_parameter_sweep.jl
 
@@ -906,7 +912,7 @@ These modules compute the small-noise predictions described above so that they c
 
 The tests run against the package environment, so activate it first. From the repository root, start Julia with the project already active,
 
-```bash
+```text
 
 julia --project=.
 
@@ -936,21 +942,31 @@ The test suite covers the B-spline basis, branch inversion, Galerkin matrix asse
 
 **Expect the full suite to take around ten minutes** on the machine listed under [Compute environment](#compute-environment), with the Galerkin-matrix tests accounting for roughly half of it.
 
-When iterating on one area, run only the file you are changing. Individual test files do not repeat the imports that `test/runtests.jl` hoists, so supply them yourself:
+When iterating on one area, you can run only the file you are changing. Start Julia from the repository root with the package environment active:
 
-```bash
+```text
 
-julia --project -e '
+julia --project=.
+
+```
+
+Then run the test file from the Julia REPL:
+
+```julia
 
 using Test, PmSpectrum
 
 using QuadGK: quadgk
 
-@testset verbose=true "single file" begin include("test/bspline_basis_test.jl") end'
+@testset verbose=true "single file" begin
+
+    include("test/bspline_basis_test.jl")
+
+end
 
 ```
 
-`verbose=true` prints the per-`@testset` breakdown. A few files need imports of their own beyond these three; check the top of the file if one fails to load.
+Individual test files do not repeat the imports that `test/runtests.jl` hoists, so supply them yourself. `verbose=true` prints the per-`@testset` breakdown. A few files need additional imports; check the top of the file if one fails to load.
 
 ---
 

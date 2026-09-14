@@ -25,13 +25,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version:
-          - '1.11' # Minimum supported Julia version
-          - '1'    # Latest stable Julia 1.x release
-        os:
-          - ubuntu-latest
-        arch:
-          - x64
+        # Explicit job list rather than a Cartesian product: the minimum
+        # supported Julia version is checked on Linux only, and the latest
+        # stable 1.x release is checked on all three operating systems.
+        include:
+          - version: '1.11'        # Minimum supported Julia version
+            os: ubuntu-latest
+            arch: x64
+          - version: '1'           # Latest stable Julia 1.x release
+            os: ubuntu-latest
+            arch: x64
+          - version: '1'
+            os: windows-latest
+            arch: x64
+          - version: '1'
+            os: macos-latest
+            arch: x64
 
     steps:
       - uses: actions/checkout@v7
